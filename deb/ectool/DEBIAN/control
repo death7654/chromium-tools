@@ -1,0 +1,5 @@
+Package: chromium-ectools
+version: 0.0.1
+Maintainer: Robinson George Arysseril
+Architecture: amd64
+Description: ectools for chromebooks running an alternate operating system
