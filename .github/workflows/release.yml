@@ -47,8 +47,8 @@ jobs:
               echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
               chown -R builder /work
               su builder -c '
-                cd aur/ectool && makepkg -sf --noconfirm && mv chromium-ectool.pkg.tar.zst /work
-                cd ../cbmem && makepkg -sf --noconfirm && mv chromium-cbmem.pkg.tar.zst /work
+                cd aur/ectool && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work/chromium-ectool.pkg.tar.zst
+                cd ../cbmem && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work/chromium-cbmem.pkg.tar.zst
               '
             "
 
