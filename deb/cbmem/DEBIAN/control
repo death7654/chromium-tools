@@ -1,0 +1,5 @@
+Package: chromium-cbmem
+Version: 25.03
+Maintainer: Robinson George Arysseril
+Architecture: amd64
+Description: cbmem for chromebooks running an alternate operating system
