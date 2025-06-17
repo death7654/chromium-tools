@@ -23,7 +23,7 @@ jobs:
           curl -L https://files.tree123.org/utils/x86_64/gnu/ectool -o ectool/usr/bin/ectool
           curl -L https://files.tree123.org/utils/x86_64/gnu/cbmem -o cbmem/usr/bin/cbmem
           chmod a+x ectool/usr/bin/ectool
-          chmod a+x cbmem/usr/bin/cbemem
+          chmod a+x cbmem/usr/bin/cbmem
           dpkg-deb --build ectool
           dpkg-deb --build cbmem
           mv ectool.deb ../ectool.deb
