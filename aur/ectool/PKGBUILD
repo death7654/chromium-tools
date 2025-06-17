@@ -10,6 +10,9 @@ depends=('libftdi')
 provides=('chromium-ectool')
 source=("ectool::https://files.tree123.org/utils/x86_64/gnu/ectool")
 sha256sums=('SKIP') 
+install=chromium-ectool.install
+options=(!strip !debug)
+
 
 package() {
   install -Dm755 "$srcdir/ectool" "$pkgdir/usr/bin/ectool"

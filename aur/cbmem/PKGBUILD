@@ -11,6 +11,8 @@ provides=('chromium-cbmem')
 source=("cbmem::https://files.tree123.org/utils/x86_64/gnu/cbmem")
 sha256sums=('SKIP') 
 install=chromium-cbmem.install
+options=(!strip !debug)
+
 
 
 package() {

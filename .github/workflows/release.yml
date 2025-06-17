@@ -1,4 +1,4 @@
-name: "Build AUR Packages and Upload"
+name: "Release Packages"
 
 on:
   push:
@@ -9,12 +9,33 @@ permissions:
   contents: write
 
 jobs:
-  build-aur:
+  build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dpkg-dev fakeroot
+
+      - name: Build .deb packages
+        run: |
+          cd deb
+          mkdir -p chromium-ectool/usr/bin
+          mkdir -p chromium-cbmem/usr/bin
+          curl -L https://files.tree123.org/utils/x86_64/gnu/ectool -o chromium-ectool/usr/bin/ectool
+          curl -L https://files.tree123.org/utils/x86_64/gnu/cbmem -o chromium-cbmem/usr/bin/cbmem
+          chmod a+x chromium-ectool/usr/bin/ectool
+          chmod a+x chromium-cbmem/usr/bin/cbmem
+          dpkg-deb --build chromium-ectool
+          dpkg-deb --build chromium-cbmem
+          mv chromium-ectool.deb ../chromium-ectool.deb
+          mv chromium-cbmem.deb ../chromium-cbmem.deb
 
       - name: Build AUR packages in Arch Linux container
         run: |
@@ -31,15 +52,16 @@ jobs:
               '
             "
 
-      - name: Upload AUR packages to GitHub Release
-        if: github.event_name != 'pull_request'
+      - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: chromium-tools
           name: "chromium-tools"
-          draft: true
+          draft: false
           prerelease: false
           files: |
+            chromium-ectool.deb
+            chromium-cbmem.deb
             *.pkg.tar.zst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
