@@ -1,0 +1,16 @@
+# Maintainer: Robinson George Arysseril
+pkgname=chromium-ectool
+pkgver=55680f7
+pkgrel=1
+pkgdesc="ectools for Chromebooks running an alternate operating system"
+arch=('x86_64')
+url="https://chromium.googlesource.com/chromiumos/platform/ec/"
+license=('custom')
+depends=('libftdi')
+provides=('chromium-ectool')
+source=("ectool::https://files.tree123.org/utils/x86_64/gnu/ectool")
+sha256sums=('SKIP') 
+
+package() {
+  install -Dm755 "$srcdir/ectool" "$pkgdir/usr/bin/ectool"
+}

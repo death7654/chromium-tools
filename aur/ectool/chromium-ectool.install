@@ -1,0 +1,3 @@
+post_install() {
+    chmod a+x /usr/bin/ectool
+}

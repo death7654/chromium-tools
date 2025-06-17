@@ -1,0 +1,11 @@
+pkgbase = chromium-cbmem
+	pkgdesc = cbmem for Chromebooks running an alternate operating system
+	pkgver = 25.03
+	pkgrel = 1
+	url = https://doc.coreboot.org/getting_started/cbmem.html
+	arch = x86_64
+	license = MIT
+	provides = cbmem
+	source = cbmem::https://files.tree123.org/utils/x86_64/gnu/cbmem
+	sha256sums = SKIP
+pkgname = chromium-cbmem

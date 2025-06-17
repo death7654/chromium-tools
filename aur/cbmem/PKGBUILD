@@ -1,0 +1,18 @@
+# Maintainer: Robinson George Arysseril
+pkgname=chromium-cbmem
+pkgver=25.03
+pkgrel=1
+pkgdesc="cbmem for Chromebooks running an alternate operating system"
+arch=('x86_64')
+url="https://doc.coreboot.org/getting_started/cbmem.html"
+license=('MIT')
+depends=()
+provides=('chromium-cbmem')
+source=("cbmem::https://files.tree123.org/utils/x86_64/gnu/cbmem")
+sha256sums=('SKIP') 
+install=chromium-cbmem.install
+
+
+package() {
+  install -Dm755 "$srcdir/cbmem" "$pkgdir/usr/bin/cbmem"
+}

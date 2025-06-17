@@ -1,0 +1,53 @@
+name: "AUR Package Build"
+
+on:
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-aur:
+    runs-on: ubuntu-latest
+    container: archlinux:base-devel 
+
+    steps:
+      - name: Install required tools
+        run: |
+          pacman -Syu --noconfirm
+          pacman -S --noconfirm git sudo fakeroot
+
+      - name: Create build user
+        run: |
+          useradd -m builder
+          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
+          chown -R builder /github
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build chromium-ectool
+        run: |
+          cd aur/ectool
+          sudo -u builder makepkg -sf --noconfirm
+          mv *.pkg.tar.zst /github/workspace/
+
+      - name: Build chromium-cbmem
+        run: |
+          cd aur/cbmem
+          sudo -u builder makepkg -sf --noconfirm
+          mv *.pkg.tar.zst /github/workspace/
+
+      - name: Upload AUR packages to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: chromium-tools
+          name: "chromium-tools"
+          draft: true
+          prerelease: false
+          files: |
+            *.pkg.tar.zst
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

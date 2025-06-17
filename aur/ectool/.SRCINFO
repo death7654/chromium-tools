@@ -1,0 +1,11 @@
+pkgbase = chromium-ectool
+	pkgdesc = ectools for Chromebooks running an alternate operating system
+	pkgver = 55680f7
+	pkgrel = 1
+	url = https://chromium.googlesource.com/chromiumos/platform/ec/
+	arch = x86_64
+	license = MIT
+	provides = ectool
+	source = ectool::https://files.tree123.org/utils/x86_64/gnu/ectool
+	sha256sums = SKIP
+pkgname = chromium-ectool
