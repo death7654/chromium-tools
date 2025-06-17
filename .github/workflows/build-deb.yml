@@ -6,6 +6,9 @@ on:
   workflow_dispatch:
   pull_request:
 
+permissions:
+  contents: write
+
 jobs:
   build:
     strategy:
@@ -15,7 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build package
+      - name: Build packages
         run: |
           cd deb
           mkdir -p ectool/usr/bin
@@ -29,21 +32,14 @@ jobs:
           mv ectool.deb ../ectool.deb
           mv cbmem.deb ../cbmem.deb
 
-      - name: Create GitHub Release
-        id: create_release
+      - name: Create GitHub Release and Upload Files
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: chromium-tools
           name: "chromium-tools"
-          draft: false
+          draft: true
           prerelease: false
-          overwrite: true  
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload ectool.deb to release
-        uses: softprops/action-gh-release@v2
-        with:
           files: |
             ectool.deb
             cbmem.deb
