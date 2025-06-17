@@ -1,4 +1,4 @@
-name: "AUR Package Build"
+name: "Build AUR Packages and Upload"
 
 on:
   push:
@@ -11,36 +11,28 @@ permissions:
 jobs:
   build-aur:
     runs-on: ubuntu-latest
-    container: archlinux:base-devel 
 
     steps:
-      - name: Install required tools
-        run: |
-          pacman -Syu --noconfirm
-          pacman -S --noconfirm git sudo fakeroot
-
-      - name: Create build user
-        run: |
-          useradd -m builder
-          echo "builder ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
-          chown -R builder /github
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Build chromium-ectool
+      - name: Build AUR packages in Arch Linux container
         run: |
-          cd aur/ectool
-          sudo -u builder makepkg -sf --noconfirm
-          mv *.pkg.tar.zst /github/workspace/
-
-      - name: Build chromium-cbmem
-        run: |
-          cd aur/cbmem
-          sudo -u builder makepkg -sf --noconfirm
-          mv *.pkg.tar.zst /github/workspace/
+          docker run --rm -v "$PWD:/work" -w /work \
+            archlinux:base-devel bash -c "
+              pacman -Syu --noconfirm
+              pacman -S --noconfirm git sudo fakeroot curl
+              useradd -m builder
+              echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
+              chown -R builder /work
+              su builder -c '
+                cd aur/ectool && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work
+                cd ../cbmem && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work
+              '
+            "
 
       - name: Upload AUR packages to GitHub Release
+        if: github.event_name != 'pull_request'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: chromium-tools
