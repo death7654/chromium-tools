@@ -3,3 +3,4 @@ Version: 55680f7
 Maintainer: Robinson George Arysseril
 Architecture: amd64
 Description: ectools for chromebooks running an alternate operating system
+Homepage: https://chromium.googlesource.com/chromiumos/platform/ec/

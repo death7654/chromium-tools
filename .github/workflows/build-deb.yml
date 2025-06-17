@@ -17,9 +17,9 @@ jobs:
 
       - name: Build package
         run: |
-          sudo apt-get update && sudo apt-get upgrade -y
           cd deb
           mkdir -p ectool/usr/bin
+          mkdir -p cbmem/usr/bin
           curl -L https://files.tree123.org/utils/x86_64/gnu/ectool -o ectool/usr/bin/ectool
           curl -L https://files.tree123.org/utils/x86_64/gnu/cbmem -o cbmem/usr/bin/cbmem
           chmod a+x ectool/usr/bin/ectool
