@@ -4,3 +4,4 @@ Maintainer: Robinson George Arysseril
 Architecture: amd64
 Description: cbmem for chromebooks running an alternate operating system
 Homepage: https://doc.coreboot.org/getting_started/cbmem.html
+Priorities: optional
