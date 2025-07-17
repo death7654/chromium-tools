@@ -17,4 +17,5 @@ options=(!strip !debug)
 
 package() {
   install -Dm755 "$srcdir/cbmem" "$pkgdir/usr/bin/cbmem"
+  
 }
