@@ -43,7 +43,7 @@ jobs:
 
       - name: Build .deb packages
         run: |
-          cd $GITHUB_WORKSPACE/deb/chromium-tools
+          cd $GITHUB_WORKSPACE/deb
           chmod a+x chromium-tools/usr/bin/ectool
           chmod a+x chromium-tools/usr/bin/cbmem
           dpkg-deb --build chromium-tools
