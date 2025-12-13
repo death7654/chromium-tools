@@ -18,12 +18,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install dependencies and setup enviornment
         run: |
           sudo apt-get update
           sudo apt-get install -y dpkg-dev fakeroot make gcc libftdi-dev libusb-1.0-0-dev hostname git
           cd deb
-          mkdir -p chromium-tools/usr/bin
+          mkdir -p $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin
 
       - name: build ectool from source
         run: |
@@ -32,17 +32,18 @@ jobs:
           mv chrome-ec-release-R100-14526.B-main ectool
           cd ectool
           BOARD=host make utils-host
-          cp build/host/util/ectool ../chromium-tools/usr/bin/ectool
+          cp build/host/util/ectool $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin/ectool
           cd ../
       - name: build cbmem from source
         run: |
           git clone https://github.com/coreboot/coreboot.git
           cd coreboot/util/cbmem
           make
-          cp cbmem ../../../chromium-tools/usr/bin/cbmem
+          cp cbmem $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin/cbmem
 
       - name: Build .deb packages
         run: |
+          cd $GITHUB_WORKSPACE/deb/chromium-tools
           chmod a+x chromium-tools/usr/bin/ectool
           chmod a+x chromium-tools/usr/bin/cbmem
           dpkg-deb --build chromium-tools
