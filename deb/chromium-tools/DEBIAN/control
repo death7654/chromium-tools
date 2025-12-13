@@ -1,0 +1,7 @@
+Package: chromium-tools
+Version: 1.0
+Maintainer: Robinson George Arysseril
+Architecture: amd64
+Description: contains ectool and cbmem binaries installed to /usr/bin
+Homepage: https://github.com/death7654/chromium-tools
+Priorities: optional

@@ -21,36 +21,31 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y dpkg-dev fakeroot
+          sudo apt-get install -y dpkg-dev fakeroot make gcc libftdi-devel libusb1-devel hostname git
+          cd deb
+          mkdir chromium-tools/usr/bin
+
+      - name: build ectool from source
+        run: |
+          curl -L https://github.com/coreboot/chrome-ec/archive/refs/heads/release-R100-14526.B-main.tar.gz -o ectool.tar.gz
+          tar -xvzf ectool.tar.gz
+          cd ectool
+          BOARD=host make utils-host
+          cp build\host\util\ectool ../chromium-tools/usr/bin/ectool
+          cd ../
+      - name: build cbmem from source
+        run: |
+          git clone https://github.com/coreboot/coreboot.git
+          cd coreboot/util/cbmem
+          make
+          cp cbmem ../../../chromium-tools/usr/bin/cbmem
 
       - name: Build .deb packages
         run: |
-          cd deb
-          mkdir -p chromium-ectool/usr/bin
-          mkdir -p chromium-cbmem/usr/bin
-          curl -L https://files.tree123.org/utils/x86_64/gnu/ectool -o chromium-ectool/usr/bin/ectool
-          curl -L https://files.tree123.org/utils/x86_64/gnu/cbmem -o chromium-cbmem/usr/bin/cbmem
-          chmod a+x chromium-ectool/usr/bin/ectool
-          chmod a+x chromium-cbmem/usr/bin/cbmem
-          dpkg-deb --build chromium-ectool
-          dpkg-deb --build chromium-cbmem
-          mv chromium-ectool.deb ../chromium-ectool.deb
-          mv chromium-cbmem.deb ../chromium-cbmem.deb
-
-      - name: Build AUR packages in Arch Linux container
-        run: |
-          docker run --rm -v "$PWD:/work" -w /work \
-            archlinux:base-devel bash -c "
-              pacman -Syu --noconfirm
-              pacman -S --noconfirm git sudo fakeroot curl
-              useradd -m builder
-              echo 'builder ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-              chown -R builder /work
-              su builder -c '
-                cd aur/ectool && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work/chromium-ectool.pkg.tar.zst
-                cd ../cbmem && makepkg -sf --noconfirm && mv *.pkg.tar.zst /work/chromium-cbmem.pkg.tar.zst
-              '
-            "
+          chmod a+x chromium-tools/usr/bin/ectool
+          chmod a+x chromium-tools/usr/bin/cbmem
+          dpkg-deb --build chromium-tools
+          mv chromium-tools.deb ../chromium-tools.deb
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
@@ -60,8 +55,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            chromium-ectool.deb
-            chromium-cbmem.deb
+            chromium-tools.deb
             *.pkg.tar.zst
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
