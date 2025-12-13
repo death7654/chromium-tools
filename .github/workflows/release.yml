@@ -30,10 +30,9 @@ jobs:
           curl -L https://github.com/coreboot/chrome-ec/archive/refs/heads/release-R100-14526.B-main.tar.gz -o ectool.tar.gz
           tar -xvzf ectool.tar.gz
           mv chrome-ec-release-R100-14526.B-main ectool
-          git clone https://chromium.googlesource.com/chromiumos/third_party/cryptoc
           cd ectool
           BOARD=host make utils-host
-          cp build\host\util\ectool ../chromium-tools/usr/bin/ectool
+          cp /build/host/util/ectool ../chromium-tools/usr/bin/ectool
           cd ../
       - name: build cbmem from source
         run: |
