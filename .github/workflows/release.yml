@@ -23,7 +23,8 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y dpkg-dev fakeroot make gcc libftdi-dev libusb-1.0-0-dev hostname git
           cd deb
-          mkdir -p $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin
+          mkdir -p $GITHUB_WORKSPACE/deb/chromium-ectool/usr/bin
+          mkdir -p $GITHUB_WORKSPACE/deb/cbmem/usr/bin
 
       - name: build ectool from source
         run: |
@@ -32,22 +33,24 @@ jobs:
           mv chrome-ec-release-R100-14526.B-main ectool
           cd ectool
           BOARD=host make utils-host
-          cp build/host/util/ectool $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin/ectool
+          cp build/host/util/ectool $GITHUB_WORKSPACE/deb/chromium-ectool/usr/bin/ectool
           cd ../
       - name: build cbmem from source
         run: |
           git clone https://github.com/coreboot/coreboot.git
           cd coreboot/util/cbmem
           make
-          cp cbmem $GITHUB_WORKSPACE/deb/chromium-tools/usr/bin/cbmem
+          cp cbmem $GITHUB_WORKSPACE/deb/cbmem/usr/bin/cbmem
 
       - name: Build .deb packages
         run: |
           cd $GITHUB_WORKSPACE/deb
-          chmod a+x chromium-tools/usr/bin/ectool
-          chmod a+x chromium-tools/usr/bin/cbmem
-          dpkg-deb --build chromium-tools
-          mv chromium-tools.deb ../chromium-tools.deb
+          chmod a+x chromium-ectool/usr/bin/ectool
+          chmod a+x cbmem/usr/bin/cbmem
+          dpkg-deb --build chromium-ectool
+          dpkg-deb --build cbmem
+          mv chromium-ectool.deb ../chromium-ectool.deb
+          mv cbmem.deb ../cbmem.deb
 
       - name: Create or update GitHub Release
         uses: softprops/action-gh-release@v2
@@ -57,7 +60,7 @@ jobs:
           draft: false
           prerelease: false
           files: |
-            chromium-tools.deb
-            *.pkg.tar.zst
+            chromium-ectool.deb
+            cbmem.deb
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
