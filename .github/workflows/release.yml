@@ -32,7 +32,7 @@ jobs:
           mv chrome-ec-release-R100-14526.B-main ectool
           cd ectool
           BOARD=host make utils-host
-          cp /build/host/util/ectool ../chromium-tools/usr/bin/ectool
+          cp build/host/util/ectool ../chromium-tools/usr/bin/ectool
           cd ../
       - name: build cbmem from source
         run: |
