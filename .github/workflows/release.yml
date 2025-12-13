@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y dpkg-dev fakeroot make gcc libftdi-devel libusb1-devel hostname git
+          sudo apt-get install -y dpkg-dev fakeroot make gcc libftdi-dev libusb-1.0-0-dev hostname git
           cd deb
           mkdir chromium-tools/usr/bin
 
